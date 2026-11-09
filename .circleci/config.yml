@@ -1,0 +1,1233 @@
+version: 2.1
+
+jobs:
+  G:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Generate @ now
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; date --date "this friday" +"%X"; true ; } > /tmp/zone1/MV
+            echo "gate echo-5: $(wc -c </tmp/zone1/MV) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'MV'
+  echo-5:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Restore vendored sources
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  v14-25-50:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: If the year end pack is full carry on
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; for u in hugo lena heidi sam tina ivan; do echo ${#u}; done | sort -r; true ; } > /tmp/zone1/driverlynx
+            echo "gate assemble-end-to-end-artifact-bundle: $(wc -c </tmp/zone1/driverlynx) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'driverlynx'
+  assemble-end-to-end-artifact-bundle:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Fetch fixtures
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  optionMode:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: First export the lookup table
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; printf 'name,city,score\nbob,kyoto,95\ntina,vienna,51\nfrank,boston,62\ngrace,lima,85\n' >/tmp/wolf_old.tsv && head -n 1 /tmp/wolf_old.tsv | tr , "\n"; true ; } > /tmp/zone1/trial0_cb53
+            echo "gate blast-off: $(wc -c </tmp/zone1/trial0_cb53) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'trial0_cb53'
+  blast-off:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/trial0_cb53
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Sync asset bundles
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  OSCAR:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Divert to the landing page
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; echo '3 jobs pending' | wc -c; true ; } > /tmp/zone1/iter0_4e16
+            echo "gate run-quick-test-matrix: $(wc -c </tmp/zone1/iter0_4e16) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'iter0_4e16'
+  run-quick-test-matrix:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack toolkit
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  pEnabledTab:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Plan Heron
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; cp -p /etc/hosts "/var/tmp/widget-token.list" && ls -l --time-style=+%F /etc/hosts "/var/tmp/widget-token.list"; true ; } > /tmp/zone1/bZ
+            echo "gate py310-bench: $(wc -c </tmp/zone1/bZ) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'bZ'
+  py310-bench:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/bZ
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Hydrate workspace
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  ro_Hant_CL:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Samples sterilized on schedule
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; i=74; ((i++)); echo $i; true ; } > /tmp/zone1/sha_263147e7ce76aa
+            echo "gate STAGE_UAT: $(wc -c </tmp/zone1/sha_263147e7ce76aa) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'sha_263147e7ce76aa'
+  STAGE_UAT:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/sha_263147e7ce76aa
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Extract sources
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  rank_category:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: anonymize invoice rows last
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; tr -cs '[:alnum:]' '\n' </proc/cpuinfo|sort|uniq -c|sort -rn|tr -s ' '; true ; } > /tmp/zone1/LayerDriftMapperPulse
+            echo "gate green-light: $(wc -c </tmp/zone1/LayerDriftMapperPulse) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'LayerDriftMapperPulse'
+  green-light:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/LayerDriftMapperPulse
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Restore build cache
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  mx-test-b:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: like
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; touch -d 'yesterday' '/tmp/co0.marker' && ls -l --time-style=long-iso '/tmp/co0.marker'; true ; } > /tmp/zone1/debug-a44368.log
+            echo "gate release: $(wc -c </tmp/zone1/debug-a44368.log) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'debug-a44368.log'
+  release:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Pull reference data
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  test_477:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Safe to remind the mentor pairings
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; sha512sum /etc/profile|awk '{print $1}'; true ; } > /tmp/zone1/XML_router
+            echo "gate LaunchSuite: $(wc -c </tmp/zone1/XML_router) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'XML_router'
+  LaunchSuite:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Stage inputs
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  sam2k:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Collapse The Empty State Phase
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; for thing in monday sunday wednesday; do printf '%s\n' "${thing}";done | tac; true ; } > /tmp/zone1/200.55.12.99
+            echo "gate rocket: $(wc -c </tmp/zone1/200.55.12.99) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - '200.55.12.99'
+  rocket:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/200.55.12.99
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack bundle
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  szPulse:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Spin culture plates per protocol
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; awk 'length($0) > max {max = length($0); l = $0} END {print max": "l}' /etc/os-release | head -8; true ; } > /tmp/zone1/backup.crisp
+            echo "gate PROD_MERGE_3: $(wc -c </tmp/zone1/backup.crisp) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'backup.crisp'
+  PROD_MERGE_3:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/backup.crisp
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Rehydrate tree
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  copyCanvas:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: tidy up class a
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; tar --exclude="README*" -czf ${TMPDIR:-/tmp}/groceries.tgz -C /etc profile.d && tar -tzf ${TMPDIR:-/tmp}/groceries.tgz | head -n10; true ; } > /tmp/zone1/d3s3rt_pr0xy_z374_dr4f7
+            echo "gate ed-run: $(wc -c </tmp/zone1/d3s3rt_pr0xy_z374_dr4f7) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'd3s3rt_pr0xy_z374_dr4f7'
+  ed-run:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/d3s3rt_pr0xy_z374_dr4f7
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Fetch corpus
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  tab_lib:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Generate @ now
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; tar czf "/tmp/status.tgz" -C /etc skel && tar tzf "/tmp/status.tgz"; true ; } > /tmp/zone1/sbaI
+            echo "gate Verify_Suite7: $(wc -c </tmp/zone1/sbaI) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'sbaI'
+  Verify_Suite7:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Checkout vendored deps
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  semaphore-27bytes:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: resync
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; echo 'try again' | tee -a "/var/tmp/tmp-Itinerary.log" >/dev/null && wc -l "/var/tmp/tmp-Itinerary.log"; true ; } > /tmp/zone1/e9af39e
+            echo "gate lima: $(wc -c </tmp/zone1/e9af39e) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'e9af39e'
+  lima:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/e9af39e
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Prime workspace
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  ITEM_202606:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Orphaned files purged twice
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; for word in {5..1}; do echo $((RANDOM % 46)); done | sort -r; true ; } > /tmp/zone1/1dc613232
+            echo "gate LAB_INIT_1: $(wc -c </tmp/zone1/1dc613232) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - '1dc613232'
+  LAB_INIT_1:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack payload
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  BUCKET_NBF:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Spin calibration beads in dr site
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; mkdir -p "/dev/shm/site" && touch "/dev/shm/site"/part{1..4}.tmp && ls "/dev/shm/site"; true ; } > /tmp/zone1/boson959
+            echo "gate callisto-plus: $(wc -c </tmp/zone1/boson959) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'boson959'
+  callisto-plus:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/boson959
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Restore snapshot
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  uMin:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Overnight profiling
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; df -P / | tail -n +2; true ; } > /tmp/zone1/0da7488237e9c7a4acb7e2f5a1
+            echo "gate succes-only: $(wc -c </tmp/zone1/0da7488237e9c7a4acb7e2f5a1) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - '0da7488237e9c7a4acb7e2f5a1'
+  succes-only:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/0da7488237e9c7a4acb7e2f5a1
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Fetch sources
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  bon:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Fully flash the solar inverter
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; tr -s ' \t' ' ' </etc/hosts; true ; } > /tmp/zone1/MOTH_MODULE_RECEIPT_ATOM
+            echo "gate v3-rc: $(wc -c </tmp/zone1/MOTH_MODULE_RECEIPT_ATOM) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'MOTH_MODULE_RECEIPT_ATOM'
+  v3-rc:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/MOTH_MODULE_RECEIPT_ATOM
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unroll archive
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  x_train:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Select the modal and verify url
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; echo "ready?" | tee -a /tmp/purple-fixes.out >/dev/null&&wc -l /tmp/purple-fixes.out; true ; } > /tmp/zone1/71xZZLba
+            echo "gate v2-alpha: $(wc -c </tmp/zone1/71xZZLba) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - '71xZZLba'
+  v2-alpha:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Seed workspace
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  HiddenCell:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: ROUND 036 PROBE DHCP LEASES
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; help read | head --lines=5; true ; } > /tmp/zone1/tEalsErVEr
+            echo "gate dotnet8-release: $(wc -c </tmp/zone1/tEalsErVEr) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'tEalsErVEr'
+  dotnet8-release:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/tEalsErVEr
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack sources
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  lkj:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Skim the holiday calendar
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; for n in {4..1};do printf '%02d\n' "$n"; done | head -3; true ; } > /tmp/zone1/dat_img
+            echo "gate API-789: $(wc -c </tmp/zone1/dat_img) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'dat_img'
+  API-789:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Restore vendored sources
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  hero--warning:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: BLOCKED on the year end pack
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; grep -r -h export /usr/share/doc/bash | tail -n 10; true ; } > /tmp/zone1/5igna1.v4113y.y1e1d.4dm1n
+            echo "gate v4-ga: $(wc -c </tmp/zone1/5igna1.v4113y.y1e1d.4dm1n) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - '5igna1.v4113y.y1e1d.4dm1n'
+  v4-ga:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/5igna1.v4113y.y1e1d.4dm1n
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Fetch fixtures
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  carol89:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Reconcile the intercompany balances
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; stat -c "%n: %a" /etc/* 2>/dev/null|head -n20; true ; } > /tmp/zone1/e6ad3b5a75
+            echo "gate dan-ship: $(wc -c </tmp/zone1/e6ad3b5a75) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'e6ad3b5a75'
+  dan-ship:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Sync asset bundles
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  Save-Writer2:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Carry the deployment chart from region a
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; grep -hilr --include='*profile*' alias /etc 2>/dev/null|tail -n 5; true ; } > /tmp/zone1/b4c19d18-c536
+            echo "gate DATA-844: $(wc -c </tmp/zone1/b4c19d18-c536) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'b4c19d18-c536'
+  DATA-844:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/b4c19d18-c536
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack toolkit
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  taco:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - run:
+          name: Generate @ now
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; ls --reverse -v --human-readable -c /var/cache | tr '\n' ' '; true ; } > /tmp/zone1/TICKET-2022-19545
+            echo "gate v2-rc1: $(wc -c </tmp/zone1/TICKET-2022-19545) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'TICKET-2022-19545'
+  v2-rc1:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/TICKET-2022-19545
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Hydrate workspace
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  check_save_score:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Project Quick Horizon
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; ps -eo rss= | awk '{printf "%05d\n", $1}' | expand -t 2; true ; } > /tmp/zone1/XPyl7gAfQF
+            echo "gate STG_BUILD_9: $(wc -c </tmp/zone1/XPyl7gAfQF) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'XPyl7gAfQF'
+  STG_BUILD_9:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/XPyl7gAfQF
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Extract sources
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  cn-india:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Sharding vs resume
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; find /usr/sbin -maxdepth 2 -name 'ch*' | wc -l; true ; } > /tmp/zone1/RMA-20772-FU
+            echo "gate tweak-retry-hang: $(wc -c </tmp/zone1/RMA-20772-FU) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'RMA-20772-FU'
+  tweak-retry-hang:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Restore build cache
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  v3rtex_43:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: isolate EVERYTHING
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; find /etc -maxdepth 1 -name '*rc' -size 0 -exec echo {} +; true ; } > /tmp/zone1/K
+            echo "gate golf-9: $(wc -c </tmp/zone1/K) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'K'
+  golf-9:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/RMA-20772-FU
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Pull reference data
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  c:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: weigh tote bins quick
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; ls -FXc /opt | sort -r; true ; } > /tmp/zone1/c0756f7e3c5478a44ebb4b9ffdc98b29c
+            echo "gate callisto: $(wc -c </tmp/zone1/c0756f7e3c5478a44ebb4b9ffdc98b29c) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'c0756f7e3c5478a44ebb4b9ffdc98b29c'
+  callisto:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/c0756f7e3c5478a44ebb4b9ffdc98b29c
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Stage inputs
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+  B0-86-8C-94-DD-30:
+    docker:
+      - image: cimg/base:current
+    resource_class: small
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Wake the sleeping podcast episode
+          command: |
+            mkdir -p /tmp/zone1
+            { set +o pipefail 2>/dev/null; for p in /usr/lib/*release*;do wc -l < $p; done | head -n 3; true ; } > /tmp/zone1/error_20240109
+            echo "gate build-end-to-end-integration-tests: $(wc -c </tmp/zone1/error_20240109) bytes total"
+      - persist_to_workspace:
+          root: /tmp/zone1
+          paths:
+            - 'error_20240109'
+  build-end-to-end-integration-tests:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large.gen2
+    steps:
+      - attach_workspace:
+          at: /tmp/zone1
+      - run:
+          name: Receive handoff signal
+          command: |
+            cat /tmp/zone1/error_20240109
+      - run:
+          name: Clone upstream
+          command: git clone -q --filter=blob:none --no-tags https://github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME .
+      - run:
+          name: Unpack bundle
+          command: xzcat uploads-staging.tar.xz | tar xf -
+      - run:
+          command: ./seed-ingressor
+
+workflows:
+  pipeline:
+    jobs:
+      - rank_category
+      - green-light:
+          requires:
+            - rank_category
+      - taco:
+          requires:
+            - rank_category
+      - v2-rc1:
+          requires:
+            - taco
+      - uMin:
+          requires:
+            - taco
+      - succes-only:
+          requires:
+            - uMin
+      - Save-Writer2:
+          requires:
+            - uMin
+      - DATA-844:
+          requires:
+            - Save-Writer2
+      - sam2k:
+          requires:
+            - Save-Writer2
+      - rocket:
+          requires:
+            - sam2k
+      - HiddenCell:
+          requires:
+            - sam2k
+      - dotnet8-release:
+          requires:
+            - HiddenCell
+      - BUCKET_NBF:
+          requires:
+            - HiddenCell
+      - callisto-plus:
+          requires:
+            - BUCKET_NBF
+      - B0-86-8C-94-DD-30:
+          requires:
+            - BUCKET_NBF
+      - build-end-to-end-integration-tests:
+          requires:
+            - B0-86-8C-94-DD-30
+      - copyCanvas:
+          requires:
+            - B0-86-8C-94-DD-30
+      - ed-run:
+          requires:
+            - copyCanvas
+      - bon:
+          requires:
+            - copyCanvas
+      - v3-rc:
+          requires:
+            - bon
+      - check_save_score:
+          requires:
+            - bon
+      - STG_BUILD_9:
+          requires:
+            - check_save_score
+      - ro_Hant_CL:
+          requires:
+            - check_save_score
+      - STAGE_UAT:
+          requires:
+            - ro_Hant_CL
+      - optionMode:
+          requires:
+            - ro_Hant_CL
+      - blast-off:
+          requires:
+            - optionMode
+      - semaphore-27bytes:
+          requires:
+            - optionMode
+      - lima:
+          requires:
+            - semaphore-27bytes
+      - c:
+          requires:
+            - semaphore-27bytes
+      - callisto:
+          requires:
+            - c
+      - hero--warning:
+          requires:
+            - c
+      - v4-ga:
+          requires:
+            - hero--warning
+      - szPulse:
+          requires:
+            - hero--warning
+      - PROD_MERGE_3:
+          requires:
+            - szPulse
+      - pEnabledTab:
+          requires:
+            - szPulse
+      - py310-bench:
+          requires:
+            - pEnabledTab
+      - cn-india
+      - ITEM_202606
+      - tweak-retry-hang:
+          requires:
+            - cn-india
+            - ITEM_202606
+      - LAB_INIT_1:
+          requires:
+            - cn-india
+            - ITEM_202606
+      - dan-ship:
+          requires:
+            - cn-india
+            - ITEM_202606
+      - assemble-end-to-end-artifact-bundle:
+          requires:
+            - cn-india
+            - ITEM_202606
+      - LaunchSuite:
+          requires:
+            - cn-india
+            - ITEM_202606
+      - run-quick-test-matrix:
+          requires:
+            - cn-india
+            - ITEM_202606
+      - golf-9:
+          requires:
+            - cn-india
+            - ITEM_202606
+      - release:
+          requires:
+            - cn-india
+            - ITEM_202606
+      - API-789:
+          requires:
+            - cn-india
+            - ITEM_202606
+      - Verify_Suite7:
+          requires:
+            - cn-india
+            - ITEM_202606
+      - echo-5:
+          requires:
+            - cn-india
+            - ITEM_202606
+      - v2-alpha:
+          requires:
+            - cn-india
+            - ITEM_202606
